@@ -18,7 +18,11 @@ android {
 		targetSdk = 36
 		versionCode = 1
 		versionName = "1.0"
-
+		buildConfigField(
+			"String",
+			"API_URL",
+			"\"https://api.nbp.pl/api/exchangerates/\""
+		)
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
 
@@ -37,6 +41,7 @@ android {
 	}
 	buildFeatures {
 		compose = true
+		buildConfig = true
 	}
 }
 dependencies {
