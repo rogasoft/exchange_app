@@ -12,10 +12,13 @@ class ExchangeMapper {
 			Exchange(
 				table = table,
 				effectiveDate = effectiveDate,
-				rates = mapRates(rates)
+				rates = mapRates("", rates)
 			)
 		}
 
-	private fun mapRates(list: List<RateResponse>): List<Rate> =
-		list.map { Rate(currency = it.currency, code = it.code, mid = it.mid) }
+	fun mapRateDtoToDomain(list: List<ExchangeResponse>): List<Rate> =
+		list.firstNotNullOf { exchange -> mapRates(table = exchange.table, rates = exchange.rates) }
+
+	private fun mapRates(table: String, rates: List<RateResponse>): List<Rate> =
+		rates.map { Rate(table = table, currency = it.currency, code = it.code, mid = it.mid) }
 }

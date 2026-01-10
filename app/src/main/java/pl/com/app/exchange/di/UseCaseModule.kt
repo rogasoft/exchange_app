@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import pl.com.app.exchange.domain.repository.ExchangeRepository
 import pl.com.app.exchange.domain.usecase.GetExchangesUseCase
 import pl.com.app.exchange.domain.usecase.GetLastRatesUseCase
@@ -26,6 +27,9 @@ object UseCaseModule {
 
 	@Provides
 	@Singleton
-	fun provideGetLastRatesUseCase(exchangeRepository: ExchangeRepository): GetLastRatesUseCase =
-		GetLastRatesUseCase(exchangeRepository)
+	fun provideGetLastRatesUseCase(
+		@DefaultDispatcher defaultDispatcher: CoroutineDispatcher,
+		exchangeRepository: ExchangeRepository
+	): GetLastRatesUseCase =
+		GetLastRatesUseCase(defaultDispatcher, exchangeRepository)
 }
