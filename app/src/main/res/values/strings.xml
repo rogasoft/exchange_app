@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Exchange</string>
+    <string name="dialog_error_title">Błąd</string>
+    <string name="dialog_error_message">W trakcie wykonywania operacji wystąpił błąd</string>
+    <string name="dialog_error_ok_button">OK</string>
+    <string name="currency">%1$.4f zł</string>
 </resources>
