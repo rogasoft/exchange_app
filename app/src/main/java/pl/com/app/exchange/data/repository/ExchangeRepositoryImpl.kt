@@ -48,12 +48,7 @@ class ExchangeRepositoryImpl(
 		networkManager.safeApiCall { exchangeService.getRateDetails(table = table, code = code) }
 			.let { result ->
 				when(result) {
-					is DataResult.Success ->
-						DataResult.Success(
-							data = rateMapper.mapDtoToDomain(result.data),
-							code = result.code
-						)
-
+					is DataResult.Success -> DataResult.Success(data = rateMapper.mapDtoToDomain(result.data))
 					is DataResult.Error -> result
 					is DataResult.NetworkError -> DataResult.NetworkError
 				}
@@ -73,12 +68,7 @@ class ExchangeRepositoryImpl(
 		}
 			.let { result ->
 				when(result) {
-					is DataResult.Success ->
-						DataResult.Success(
-							data = rateMapper.mapDtoToDomain(result.data),
-							code = result.code
-						)
-
+					is DataResult.Success -> DataResult.Success(data = rateMapper.mapDtoToDomain(result.data))
 					is DataResult.Error -> result
 					is DataResult.NetworkError -> DataResult.NetworkError
 				}

@@ -20,7 +20,7 @@ class NetworkManager(val connectivityManager: ConnectivityManager) {
 	): DataResult<T> = runCatching { apiCall() }.fold(
 		onSuccess = { response ->
 			if (response.isSuccessful) {
-				response.body()?.let { DataResult.Success(data = it, code = response.code())
+				response.body()?.let { DataResult.Success(data = it)
 				} ?: DataResult.Error(message = "Empty body", code = response.code())
 			} else {
 				DataResult.Error(
