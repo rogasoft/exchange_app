@@ -32,14 +32,8 @@ class ExchangePagingSource(
 					nextKey = if (index + 1 < tables.size) index + 1 else null
 				)
 			}
-
-			is DataResult.NetworkError ->
-				LoadResult.Error(Exception())
-
-			is DataResult.Error ->
-				LoadResult.Error(Exception())
+			is DataResult.NetworkError -> LoadResult.Error(Exception())
+			is DataResult.Error -> LoadResult.Error(Exception())
 		}
 	}
-
-
 }

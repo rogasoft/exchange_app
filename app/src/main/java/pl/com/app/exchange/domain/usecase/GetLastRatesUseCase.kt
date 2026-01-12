@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import pl.com.app.exchange.common.extension.differsByAtLeast10Percent
 import pl.com.app.exchange.data.api.DataResult
 import pl.com.app.exchange.domain.model.details.RateDetails
 import pl.com.app.exchange.domain.model.details.RateItem
@@ -18,34 +19,24 @@ class GetLastRatesUseCase(
 	suspend operator fun invoke(
 		table: String,
 		code: String,
-		currentMid: BigDecimal
+		currentMid: Double
 	): Flow<DataResult<RateDetails>> =
 		exchangeRepository.getLastRates(table, code)
 			.map { result ->
 				when (result) {
 					is DataResult.Success -> {
-						val updatedRates = withContext(defaultDispatcher) {
+						withContext(defaultDispatcher) {
 							result.data.rates.compareWithCurrent(currentMid = currentMid)
+						}.let { updatedRates ->
+							result.copy(data = result.data.copy(rates = updatedRates))
 						}
-
-						result.copy(
-							data = result.data.copy(rates = updatedRates)
-						)
 					}
-
-					is DataResult.Error -> result
+					is DataResult.Error,
 					is DataResult.NetworkError -> result
 				}
 			}
 
-	fun List<RateItem>.compareWithCurrent(currentMid: BigDecimal): List<RateItem> = map {
-		it.copy(isMoreThanTenPercent = currentMid.differsByAtLeast10Percent(BigDecimal(it.mid)))
-	}
-
-	fun BigDecimal.differsByAtLeast10Percent(other: BigDecimal): Boolean {
-		if (this == BigDecimal.ZERO) return other != BigDecimal.ZERO
-
-		val threshold = this.multiply(BigDecimal("0.1"))
-		return this.subtract(other).abs() >= threshold
+	private fun List<RateItem>.compareWithCurrent(currentMid: Double): List<RateItem> = map {
+		it.copy(isMoreThanTenPercent = BigDecimal(currentMid).differsByAtLeast10Percent(BigDecimal(it.mid)))
 	}
 }
